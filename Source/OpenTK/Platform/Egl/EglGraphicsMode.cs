@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using OpenTK.Graphics;
 
@@ -53,6 +54,8 @@ namespace OpenTK.Platform.Egl
             int samples, ColorFormat accum, int buffers, bool stereo,
             RenderableFlags renderable_flags)
         {
+			Debug.Print ("SELECT GRAPHICSMODE.");
+
             IntPtr[] configs = new IntPtr[1];
             int[] attribList = new int[] 
             { 

@@ -45,6 +45,10 @@ namespace OpenTK.Platform
 
         static Factory()
         {
+			Embedded = new Egl.EglBlackBerryPlatformFactory ();
+			Default = Embedded;
+			/*
+
             if (Configuration.RunningOnWindows) Default = new Windows.WinFactory();
             else if (Configuration.RunningOnMacOS) Default = new MacOS.MacOSFactory();
             else if (Configuration.RunningOnX11) Default = new X11.X11Factory();
@@ -60,7 +64,7 @@ namespace OpenTK.Platform
             else Embedded = new UnsupportedPlatform();
 
             if (Default is UnsupportedPlatform && !(Embedded is UnsupportedPlatform))
-                Default = Embedded;
+                Default = Embedded;*/
         }
 
         #endregion

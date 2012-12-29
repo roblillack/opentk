@@ -48,37 +48,43 @@ namespace OpenTK.Platform.Egl
         public EglContext(GraphicsMode mode, EglWindowInfo window, IGraphicsContext sharedContext,
             int major, int minor, GraphicsContextFlags flags)
         {
-            if (mode == null)
-                throw new ArgumentNullException("mode");
-            if (window == null)
-                throw new ArgumentNullException("window");
+			try {
+				Debug.Print ("EglContext()");
+				Debug.Indent ();
+	            if (mode == null)
+	                throw new ArgumentNullException("mode");
+	            if (window == null)
+	                throw new ArgumentNullException("window");
 
-            EglContext shared = (EglContext)sharedContext;
+	            EglContext shared = (EglContext)sharedContext;
 
-            int dummy_major, dummy_minor;
-            if (!Egl.Initialize(window.Display, out dummy_major, out dummy_minor))
-                throw new GraphicsContextException(String.Format("Failed to initialize EGL, error {0}.", Egl.GetError()));
+	            int dummy_major, dummy_minor;
+	            if (!Egl.Initialize(window.Display, out dummy_major, out dummy_minor))
+	                throw new GraphicsContextException(String.Format("Failed to initialize EGL, error {0}.", Egl.GetError()));
 
-            WindowInfo = window;
+	            WindowInfo = window;
 
-            // Select an EGLConfig that matches the desired mode. We cannot use the 'mode'
-            // parameter directly, since it may have originated on a different system (e.g. GLX)
-            // and it may not support the desired renderer.
-            Mode = new EglGraphicsMode().SelectGraphicsMode(mode.ColorFormat,
-                mode.Depth, mode.Stencil, mode.Samples, mode.AccumulatorFormat,
-                mode.Buffers, mode.Stereo,
-                major > 1 ? RenderableFlags.ES2 : RenderableFlags.ES);
-            if (!Mode.Index.HasValue)
-                throw new GraphicsModeException("Invalid or unsupported GraphicsMode.");
-            IntPtr config = Mode.Index.Value;
+	            // Select an EGLConfig that matches the desired mode. We cannot use the 'mode'
+	            // parameter directly, since it may have originated on a different system (e.g. GLX)
+	            // and it may not support the desired renderer.
+	            Mode = new EglGraphicsMode().SelectGraphicsMode(mode.ColorFormat,
+	                mode.Depth, mode.Stencil, mode.Samples, mode.AccumulatorFormat,
+	                mode.Buffers, mode.Stereo,
+	                major > 1 ? RenderableFlags.ES2 : RenderableFlags.ES);
+	            if (!Mode.Index.HasValue)
+	                throw new GraphicsModeException("Invalid or unsupported GraphicsMode.");
+	            IntPtr config = Mode.Index.Value;
 
-            if (window.Surface == IntPtr.Zero)
-                window.CreateWindowSurface(config);
+	            if (window.Surface == IntPtr.Zero)
+	                window.CreateWindowSurface(config);
 
-            int[] attrib_list = new int[] { Egl.CONTEXT_CLIENT_VERSION, major, Egl.NONE };
-            HandleAsEGLContext = Egl.CreateContext(window.Display, config, shared != null ? shared.HandleAsEGLContext : IntPtr.Zero, attrib_list);
+	            int[] attrib_list = new int[] { Egl.CONTEXT_CLIENT_VERSION, major, Egl.NONE };
+	            HandleAsEGLContext = Egl.CreateContext(window.Display, config, shared != null ? shared.HandleAsEGLContext : IntPtr.Zero, attrib_list);
 
-            MakeCurrent(window);
+	            MakeCurrent(window);
+			} finally {
+				Debug.Unindent ();
+			}
         }
 
         public EglContext(ContextHandle handle, EglWindowInfo window, IGraphicsContext sharedContext,

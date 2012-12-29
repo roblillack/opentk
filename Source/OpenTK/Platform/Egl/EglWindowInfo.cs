@@ -72,6 +72,7 @@ namespace OpenTK.Platform.Egl
 
         public void CreateWindowSurface(IntPtr config)
         {
+			Debug.Print ("Creating window surface.");
             Surface = Egl.CreateWindowSurface(Display, config, Handle, null);
 			if (Surface==IntPtr.Zero)
 			{
